@@ -1,0 +1,92 @@
+[[section-runtime-view]]
+== Vista de ejecución
+
+
+=== <Escenario de ejecución 1>
+
+Un usuario inicia sesión en la aplicación.
+
+[plantuml,"06_runtime_registro",png]
+----
+actor Bob
+actor Alice
+participant DeDe
+participant Pod
+database bd as "Base de datos"
+Bob -> DeDe: Bob pide iniciar sesión
+DeDe -> Pod: Redirecciona el inicio de sesión al proveedor del POD
+Bob <-- Pod: Pide los datos para registro
+Bob -> Pod: Inserta los datos
+DeDe <-- Pod: Validación
+Bob <-- DeDe: Confirmación registro realizado con éxito
+Alice -> DeDe: Alice inicia sesión 
+DeDe -> Pod: Redirecciona al proveedor del POD
+Alice <-- Pod: Pide los datos para iniciar sesión
+Alice -> Pod: Inserta los datos
+DeDe <-- Pod: Confirmación de datos
+----
+=== <Escenario de ejecución 2>
+Búsqueda de artículos mediante los filtros proporcionados en la aplicación.
+[plantuml,"06_runtime_filtro",png]
+----
+actor Bob
+participant DeDe
+participant Pod
+database DataBase as "DataBase"
+Bob -> DeDe: Pulsa "Log-In" 
+DeDe -> Pod: Redirecciona al proveedor del POD
+Bob <-- Pod: Pide los datos para iniciar sesión
+Bob -> Pod: Inserta los datos
+DeDe <-- Pod: Confirmación de datos
+Bob <-- DeDe: Sesión iniciada
+DeDe-> DeDe: Entra a la web
+Bob -> DeDe: Pulsa "Filtrar"
+DeDe-> DeDe: Muestra los filtros
+Bob -> DeDe: Pulsa "Sudaderas"
+DeDe-> DataBase: Pide la lista de sudaderas
+DataBase --> DeDe: Devuelve la lista de sudaderas
+DeDe-> DeDe: Muestra solo las sudaderas
+----
+
+=== <Escenario de ejecución 3>
+El usuario inicia sesión para poder realizar un pedido.
+[plantuml,"06_runtime_pedido",png]
+----
+actor Cliente
+participant DeDe
+participant Pod
+database DataBase as "DataBase"
+Cliente-> DeDe: Pulsa "Log-In" 
+DeDe -> Pod: Redirecciona al proveedor del POD
+Cliente<-- Pod: Pide los datos para iniciar sesión
+Cliente-> Pod: Inserta los datos
+DeDe <-- Pod: Confirmación de datos
+Cliente<-- DeDe: Sesión iniciada
+Cliente-> DeDe: Añadir producto
+DeDe-> DeDe: Añade producto al carrito
+Cliente -> DeDe: Realizar pedido
+DeDe <-- Pod: Direcciones asociadas a su perfil de SOLID
+Cliente -> DeDe: Selecciona su dirección y rellena los datos de pago
+DeDe -> DataBase: Añade el pedido a la BD
+Cliente <-- DeDe: Pedido realizado con éxito
+----
+=== <Escenario de ejecución 4>
+El cliente inicia sesión para ver el listado de pedidos que ha realizado.
+[plantuml,"06_runtime_verPedido",png]
+----
+actor Bob
+participant DeDe
+participant Pod
+database database
+Bob -> DeDe: Pulsa "Log-In" 
+DeDe -> Pod: Redirecciona al proveedor del POD
+Bob <-- Pod: Pide los datos para iniciar sesión
+Bob -> Pod: Inserta los datos
+DeDe <-- Pod: Confirmación de datos
+Bob <-- DeDe: Sesión iniciada
+DeDe -> DeDe: Bob es redireccionado a la home page
+Bob -> DeDe: Bob hace click en "Mis pedidos"
+database <- DeDe: query para obtener lista de pedidos con id_user=bob
+database -> DeDe: lista de pedidos de id_user=bob
+DeDe -> DeDe: Bob es redireccionado a la vista de pedidos
+----
